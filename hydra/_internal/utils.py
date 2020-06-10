@@ -454,23 +454,7 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     assert isinstance(
         params, DictConfig
     ), f"Input config params are expected to be a mapping, found {type(config.params).__name__}"
-    primitives = {}
-    rest = {}
-    for k, v in kwargs.items():
-        if _utils.is_primitive_type(v) or isinstance(v, (dict, list)):
-            primitives[k] = v
-        else:
-            rest[k] = v
-    final_kwargs = {}
-    with read_write(params):
-        params.merge_with(OmegaConf.create(primitives))
-
-    for k, v in params.items():
-        final_kwargs[k] = v
-
-    for k, v in rest.items():
-        final_kwargs[k] = v
-    return final_kwargs
+    return {**dict(params), **kwargs}
 
 
 def _get_cls_name(config: Union[ObjectConf, DictConfig]) -> str:
